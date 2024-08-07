@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, ArrayNotEmpty, IsEmail } from 'class-validator';
+import { IsArray, ArrayNotEmpty, IsEmail, IsString } from 'class-validator';
 
 export class SendInvitesDto {
   @ApiProperty({
