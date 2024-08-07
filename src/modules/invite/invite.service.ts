@@ -16,6 +16,33 @@ export class InviteService {
     private readonly emailService: EmailService
   ) {}
 
+  async createInvite(organisationId: string) {
+    const organisation = await this.organisationRepository.findOne({ where: { id: organisationId } });
+    if (!organisation) {
+      throw new NotFoundException('organisation not found');
+    }
+
+    const token = uuidv4();
+
+    const invite = await this.inviteRepository.create({
+      token,
+      organisation: organisation,
+      isGeneric: true,
+    });
+
+    await this.inviteRepository.save(invite);
+
+    const link = `${process.env.FRONTEND_URL}/invite?token=${token}`;
+
+    const responseData = {
+      status_code: HttpStatus.OK,
+      message: 'Invite link generated successfully',
+      link,
+    };
+
+    return responseData;
+  }
+
   async sendInviteLinks(emails: string[], orgId: string) {
     const organisation = await this.organisationRepository.findOne({
       where: { id: orgId },
